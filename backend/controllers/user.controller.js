@@ -63,10 +63,24 @@ module.exports.getUserProfile=async (req,res,next)=>{
 
 
 module.exports.logoutUser=async (req,res,next)=>{
-    res.clearCookie('token');
-    const token =req.cookies.token || req.headers.authorization?.split(' ')[ 1 ];
-     
-    await blacklistTokenModel.create({token});
-    res.status(200).json({message:'Logged out successfully'})
-
+    try{
+        res.clearCookie('token'); //clearing the token from the cookie
+        const token =req.cookies.token || req.headers.authorization?.split(' ')[ 1 ];
+        
+        await blacklistTokenModel.create({token});
+        res.status(200).json({message:'Logged out successfully'})
+        next();
+    }catch(err){
+        console.error(err)
+        next(err)
+    }
+    // 1. Extract token from cookies or headers
+    // 2. If no token → 200 "Logged out successfully"
+    // 3. Create a new document in blacklistTokenModel with the extracted token
+    // 4. Call next() to proceed to the next middleware or route.
+    // 5. Clear the token from the cookies.
+    // 6. Return 200 "Logged out successfully"
+    // 7. Log the user out.
+    // 8. If you want to delete the token from the database, you can use the token as a unique identifier.
+    // 9. Delete the document in blacklistTokenModel.
 }
