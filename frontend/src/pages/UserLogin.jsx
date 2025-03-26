@@ -1,20 +1,40 @@
-import React, { useState } from 'react'
+import axios from 'axios'
+import React, { useState,useContext } from 'react'
 import {Link, useNavigate} from 'react-router-dom'
+import { UserDataContext } from '../context/UserContext'
 
 function UserLogin() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [data, setData] = useState('')
+  // const [data, setData] = useState('')
   const navigate = useNavigate()
+
+  const {user,setUser}=useContext(UserDataContext)
   // handle form submission event here with the email and password values
   // and handle any server-side validation or error messages appropriately.
   // For example, you could use the fetch API to send a POST request to the server's '/login' endpoint.
   // Once the server responds with a valid token, you could set the token in a cookie or local storage,
   // and redirect the user to the home page.
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setData(email, password)
+
+    const userData={
+      email:email,
+      password:password
+    }
+
+    const response= await axios.post(`${import.meta.env.vITE_BASE_URL}/user/login`,userData)
+    if(response.status===200){//200 from backend 'which you never user properly' duffer
+      
+      
+      const data=response.data;
+      setUser(data) // setting user data to userContext
+      localStorage.setItem('token', data.token) 
+      
+      
+      navigate('/home')
+    }
     console.log(email, password)
     setEmail("")
     setPassword("")
