@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import {Link, useNavigate} from 'react-router-dom'
+import axios from 'axios'
+import {CaptainDataContext} from '../context/CaptainContext'
 
-function captainSignup() {
+function CaptainSignup() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [firstname, setFirstname] = useState('')
@@ -12,15 +14,17 @@ function captainSignup() {
   const [vehicleType, setVehicleType] = useState('')
 
   const navigate = useNavigate()
+
+  const {captain, setCaptain}=React.useContext(CaptainDataContext)
   // handle form submission event here with the email and password values
   // and handle any server-side validation or error messages appropriately.
   // For example, you could use the fetch API to send a POST request to the server's '/login' endpoint.
   // Once the server responds with a valid token, you could set the token in a cookie or local storage,
   // and redirect the user to the home page.
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault()
-    setCaptainData({
+     const newCaptain={
       fullname:{
         firstname:firstname,
         lastname:lastname
@@ -31,9 +35,17 @@ function captainSignup() {
         color: vehicleColor,
         plate: vehiclePlate,
         capacity: vehicleCapacity,
-        type: vehicleType
+        vehicleType: vehicleType
       }
-    })
+     }
+
+     const response=await axios.post(`${import.meta.env.VITE_BASE_URL}/captain/register`,newCaptain)
+     if(response.status===201){ //201 from backend 'which you never user properly' duffer
+       let data=response.data;
+       setCaptain(data.captain) // setting captain data to userContext
+        // setting captain data to userContext
+        localStorage.setItem('token', data.token)
+       navigate('/captain-home')
     console.log(email, password)
     setEmail("")
     setPassword("")
@@ -45,7 +57,7 @@ function captainSignup() {
     setVehicleType("")
 
     // send the form data to the server
-  }
+  } }
   return (
     <div>
       <form action="" onSubmit={handleSubmit}>
@@ -106,7 +118,7 @@ function captainSignup() {
       <button type='submit' onClick={()=>navigate('/user/login')}>Sign in as User</button>
     </div>
   )
+
 }
 
-
-export default captainSignup
+export default CaptainSignup

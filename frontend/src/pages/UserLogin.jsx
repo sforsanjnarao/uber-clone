@@ -24,7 +24,8 @@ function UserLogin() {
       password:password
     }
 
-    const response= await axios.post(`${import.meta.env.vITE_BASE_URL}/user/login`,userData)
+    const response= await axios.post(`${import.meta.env.VITE_BASE_URL}/user/login`,userData)
+   try {
     if(response.status===200){//200 from backend 'which you never user properly' duffer
       
       
@@ -39,7 +40,10 @@ function UserLogin() {
     setEmail("")
     setPassword("")
 
-    // send the form data to the server
+    
+   } catch (error) {
+    console.error(error)
+   }// send the form data to the server
   }
   return (
     <div>
