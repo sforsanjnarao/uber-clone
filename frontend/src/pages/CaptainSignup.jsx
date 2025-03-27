@@ -4,7 +4,6 @@ import {Link, useNavigate} from 'react-router-dom'
 function captainSignup() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [captainData, setCaptainData] = useState('')
   const [firstname, setFirstname] = useState('')
   const [lastname, setLastname] = useState('')
   const [vehicleColor, setVehicleColor] = useState('')
